@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Login() {
   return (
-    <section className="w-full h-full flex flex-col gap-2">
+    <div className="w-full h-full flex flex-col gap-2">
       <LoginForm />
       <Link
         href={"/auth/signup"}
@@ -11,6 +11,6 @@ export default function Login() {
       >
         계정이 없으신가요?
       </Link>
-    </section>
+    </div>
   );
 }
