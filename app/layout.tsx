@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-secondary">
+      <body className="antialiased bg-secondary text-black">
         <QueryProvider>
           <div className="max-w-160 w-full mx-auto h-full bg-white">
             <Header />
