@@ -14,8 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        <QueryProvider>{children}</QueryProvider>
+      <body className="antialiased bg-secondary">
+        <QueryProvider>
+          <div className="max-w-160 w-full mx-auto h-full bg-white">
+            {children}
+          </div>
+        </QueryProvider>
       </body>
     </html>
   );
