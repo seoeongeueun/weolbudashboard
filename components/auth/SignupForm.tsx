@@ -2,18 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { FormInput, FormRadioGroup } from "@/components/ui";
-
-// 사용자 역할 타입 정의
-type Role = "STUDENT" | "INSTRUCTOR";
-
-// 회원가입 폼 필드 데이터
-interface SignupFormData {
-  name: string;
-  phone: string;
-  email: string;
-  password: string;
-  role: Role;
-}
+import type { SignupFormData } from "@/types/auth";
+import { Button } from "@/components/ui";
 
 /**
  * react hook form을 이용한 회원가입 폼 컴포넌트
@@ -126,13 +116,11 @@ export function SignupForm() {
         })}
       />
 
-      <button
+      <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isSubmitting ? "처리 중..." : "회원가입"}
-      </button>
+        label={isSubmitting ? "처리 중..." : "회원가입"}
+      />
     </form>
   );
 }
