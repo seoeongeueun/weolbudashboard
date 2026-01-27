@@ -1,5 +1,16 @@
-import { LoginForm } from "@/components/auth/LoginForm";
+import { LoginForm } from "@/components/auth";
+import Link from "next/link";
 
 export default function Login() {
-  return <LoginForm />;
+  return (
+    <section className="w-full h-full p-4 flex flex-col gap-2">
+      <LoginForm />
+      <Link
+        href={"/signup"}
+        className="ml-auto text-center text-sm hover:text-theme underline underline-offset-3"
+      >
+        계정이 없으신가요?
+      </Link>
+    </section>
+  );
 }

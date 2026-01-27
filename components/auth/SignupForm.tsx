@@ -33,7 +33,7 @@ export function SignupForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full h-full flex flex-col gap-4 p-4"
+      className="w-full flex flex-col gap-4"
     >
       <FormInput
         label="이름"
