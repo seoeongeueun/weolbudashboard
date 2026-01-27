@@ -9,9 +9,9 @@ export function Header() {
   const showBackButton = pathname !== "/";
 
   return (
-    <header className="px-4 py-2">
+    <header>
       <nav
-        className="flex flex-row items-center justify-between"
+        className="flex flex-row items-center justify-between -ml-2"
         aria-label="주요 네비게이션"
       >
         {showBackButton && (

@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased bg-secondary text-black">
         <QueryProvider>
-          <div className="max-w-160 w-full mx-auto h-full bg-white">
+          <div className="p-4 max-w-160 w-full mx-auto h-full bg-white flex flex-col gap-4">
             <Header />
             {children}
           </div>
