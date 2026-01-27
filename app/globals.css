@@ -35,3 +35,8 @@ html {
   background-color: var(--secondary);
   color: var(--text);
 }
+
+button {
+  cursor: pointer;
+  text-decoration: none;
+}
