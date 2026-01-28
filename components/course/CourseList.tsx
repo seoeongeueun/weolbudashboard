@@ -1,154 +1,62 @@
+"use client";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useState, useCallback } from "react";
 import { CourseCard } from "./CourseCard";
-import type { CourseResponse } from "@/types";
+import type { SortOption, CourseResponse } from "@/types";
 import { enrollCourses } from "@/app/course/action";
 import { Button } from "@/components/ui";
+import { InfiniteScrollObserver } from "./InfiniteScrollObserver";
 
-export function CourseList() {
-  //test용 CourseCard 3개 작성
-  const courses: CourseResponse[] = [
-    {
-      id: 1,
-      title: "React 기초부터 심화까지",
-      description: "이 강의는 React의 기초부터 심화 개념까지 다룹니다.",
-      maxStudents: 30,
-      price: 50000,
-      instructorName: "홍길동",
-      createdAt: "2023-01-01T00:00:00Z",
-      isFull: false,
-      availableSeats: 10,
-      currentStudents: 20,
-    },
-    {
-      id: 2,
-      title: "TypeScript 완전 정복",
-      description: "TypeScript의 모든 것을 배워봅시다.",
-      maxStudents: 25,
-      price: 60000,
-      instructorName: "김철수",
-      createdAt: "2023-02-01T00:00:00Z",
-      isFull: false,
-      availableSeats: 5,
-      currentStudents: 20,
-    },
-    {
-      id: 3,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 4,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 5,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 6,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 7,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 8,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 9,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-    {
-      id: 10,
-      title: "Next.js로 서버사이드 렌더링 배우기",
-      description:
-        "Next.js를 사용한 SSR과 SSG에 대해 알아봅시다. Next.js를 사용한 SSR과 SSG에 대해 알아봅시다.",
-      maxStudents: 20,
-      price: 70000,
-      instructorName: "이영희",
-      createdAt: "2023-03-01T00:00:00Z",
-      isFull: true,
-      availableSeats: 0,
-      currentStudents: 20,
-    },
-  ];
+interface CourseListProps {
+  sortBy: SortOption;
+}
+
+/**
+ * 강의 목록 컴포넌트 (클라이언트 컴포넌트)
+ *
+ * @description
+ * - 데이터/캐싱: useInfiniteQuery
+ * - 스크롤 감지: InfiniteScrollObserver
+ * - 초기 데이터: 서버에서 prefetch 후 hydration
+ */
+export function CourseList({ sortBy }: CourseListProps) {
+  const [allCourses, setAllCourses] = useState<CourseResponse[]>([]);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["courses", sortBy],
+      queryFn: ({ pageParam }) => console.log("TODO"), //TODO: 쿼리 작성 필요,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        //if (lastPage.length < 10) return undefined;
+        return allPages.length + 1;
+      },
+    });
+
+  // 모든 페이지의 강의를 단일 배열로 flatten
+  //const courses = data?.pages.flatMap((page) => page) ?? [];
+
+  const courses = allCourses;
 
   return (
     <form
       action={enrollCourses}
       id="course-enroll-form"
-      className="flex flex-col h-full overflow-y-hidden overflow-x-visible relative"
+      className="flex flex-col h-full overflow-hidden relative"
     >
       <section className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full">
         {courses.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}
+
+        <InfiniteScrollObserver
+          hasMore={hasNextPage ?? false}
+          isLoading={isFetchingNextPage}
+          onLoadMore={fetchNextPage}
+        />
       </section>
 
-      {/* TODO: 무한스크롤용 스크롤 감지 옵저버 추가 필요 */}
       <footer className="z-30 bg-transparent pt-4 sticky w-full bottom-0 pointer-events-none">
         <Button
           type="submit"
