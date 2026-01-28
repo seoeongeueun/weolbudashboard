@@ -1,5 +1,6 @@
 import { SortDropdown } from "@/components/course";
 import type { SortOption } from "@/types";
+import { CourseList } from "@/components/course";
 
 /**
  * url 쿼리 파라미터를 파싱해서 정렬 기준을 추출
@@ -38,6 +39,7 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
       <div className="ml-auto">
         <SortDropdown currentSort={sortBy} />
       </div>
+      <CourseList />
     </>
   );
 }
