@@ -5,3 +5,4 @@ export { Button } from "./Button";
 export { Dropdown } from "./Dropdown";
 export { Breadcrumb } from "./Breadcrumb";
 export type { DropdownOption } from "./Dropdown";
+export { Tag } from "./Tag";
