@@ -86,9 +86,9 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
           className={clsx(
-            "border border-secondary rounded-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-theme disabled:opacity-50 disabled:cursor-not-allowed",
+            "border border-secondary shadow-xs rounded-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-theme disabled:opacity-50 disabled:cursor-not-allowed",
             {
-              "w-40 px-2 py-1 text-s": size === "default",
+              "w-40 px-2 py-1 text-xs": size === "default",
               "w-full px-3 py-2 text-sm": size === "large",
             },
           )}

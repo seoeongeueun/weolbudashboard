@@ -7,7 +7,7 @@ import { CourseList } from "@/components/course";
  * @example /course?sort=latest → { sort: "latest" }
  */
 interface CoursePageProps {
-  searchParams: { sort?: SortOption };
+  searchParams: Promise<{ sort?: SortOption }>;
 }
 
 /**
@@ -29,7 +29,8 @@ interface CoursePageProps {
  */
 export default async function CoursePage({ searchParams }: CoursePageProps) {
   // 정렬 값이 없으면 기본으로 최신순
-  const sortBy = searchParams.sort || "latest";
+  const params = await searchParams;
+  const sortBy = params.sort || "latest";
 
   // TODO: 서버에서 정렬된 강의 목록 fetch
   // const courses = await fetchCourses({ sortBy });
