@@ -1,12 +1,12 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useState, useCallback } from "react";
 import { CourseCard } from "./CourseCard";
-import type { SortOption, CourseResponse } from "@/types";
+import type { SortOption } from "@/types";
 import { enrollCourses } from "@/app/course/action";
 import { Button } from "@/components/ui";
 import { InfiniteScrollObserver } from "./InfiniteScrollObserver";
+import { courseQueries } from "@/lib/query/courseQueries";
 
 interface CourseListProps {
   sortBy: SortOption;
@@ -21,23 +21,11 @@ interface CourseListProps {
  * - 초기 데이터: 서버에서 prefetch 후 hydration
  */
 export function CourseList({ sortBy }: CourseListProps) {
-  const [allCourses, setAllCourses] = useState<CourseResponse[]>([]);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["courses", sortBy],
-      queryFn: ({ pageParam }) => console.log("TODO"), //TODO: 쿼리 작성 필요,
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        //if (lastPage.length < 10) return undefined;
-        return allPages.length + 1;
-      },
-    });
+    useInfiniteQuery(courseQueries.infinite(sortBy));
 
   // 모든 페이지의 강의를 단일 배열로 flatten
-  //const courses = data?.pages.flatMap((page) => page) ?? [];
-
-  const courses = allCourses;
+  const courses = data?.pages.flatMap((page) => page.content) ?? [];
 
   return (
     <form

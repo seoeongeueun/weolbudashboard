@@ -7,7 +7,7 @@ import { LoaderCircle } from "lucide-react";
 interface InfiniteScrollObserverProps {
   hasMore: boolean;
   isLoading: boolean;
-  onLoadMore: (page: number) => Promise<CourseResponse[]>; //다음 페이지의 강의를 로드
+  onLoadMore: () => void;
 }
 
 /**
@@ -28,8 +28,7 @@ export function InfiniteScrollObserver({
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoading) {
-          //TODO: 다음 페이지 로드
-          //onLoadMore();
+          onLoadMore();
         }
       },
       {
