@@ -15,9 +15,7 @@
   --color-error: var(--error);
   --color-theme: var(--theme);
   --color-secondary: var(--secondary);
-
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-skeleton: var(--skeleton);
 }
 
 /* @media (prefers-color-scheme: dark) {
