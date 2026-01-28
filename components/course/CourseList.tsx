@@ -139,6 +139,7 @@ export function CourseList() {
   return (
     <form
       action={enrollCourses}
+      id="course-enroll-form"
       className="flex flex-col h-full overflow-y-hidden overflow-x-visible relative"
     >
       <section className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full">
