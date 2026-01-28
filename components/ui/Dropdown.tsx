@@ -95,7 +95,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
-          <span className={selectedOption ? "text-black" : "text-red-700"}>
+          <span>
             {selectedOption
               ? selectedOption.label
               : (placeholder ?? "선택하세요")}
