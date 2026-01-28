@@ -34,11 +34,10 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
   // const courses = await fetchCourses({ sortBy });
 
   return (
-    <section>
-      <header className="flex flex-row items-center justify-between w-full">
-        <h1 className="text-lg font-medium">강의 목록</h1>
+    <>
+      <div className="ml-auto">
         <SortDropdown currentSort={sortBy} />
-      </header>
-    </section>
+      </div>
+    </>
   );
 }

@@ -2,27 +2,16 @@
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { Breadcrumb } from "./Breadcrumb";
 
 export function Header() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const showBackButton = pathname !== "/";
-
   return (
     <header>
       <nav
-        className="flex flex-row items-center justify-between -ml-2"
+        className="flex flex-row items-center justify-between"
         aria-label="주요 네비게이션"
       >
-        {showBackButton && (
-          <button
-            onClick={() => router.back()}
-            className="flex items-center justify-center w-8 h-8"
-            aria-label="뒤로 가기"
-          >
-            <ChevronLeft aria-hidden="true" />
-          </button>
-        )}
+        <Breadcrumb />
         <Link
           href="/"
           className="text-0 cursor-pointer bg-[url('https://cdn.weolbu.com/fe/logo.DZwdMn-h.svg')] bg-contain bg-no-repeat flex h-5 w-[140px] min-w-[140px] ml-auto"

@@ -34,16 +34,16 @@ export function Breadcrumb() {
   if (automaticBreadcrumbs.length === 0) return null;
 
   return (
-    <nav aria-label="breadcrumb" className="py-3 font-bold">
-      <ol className="flex items-center gap-2">
+    <nav aria-label="breadcrumb" className="py-3 text-xs md:text-sm font-bold">
+      <ol className="flex items-center gap-1 md:gap-2">
         {automaticBreadcrumbs.map((item, index) => {
           const isLast = index === automaticBreadcrumbs.length - 1;
 
           return (
-            <li key={item.href} className="flex items-center gap-2">
+            <li key={item.href} className="flex items-center gap-0 md:gap-2">
               {isLast ? (
                 // 마지막 항목 (현재 페이지)
-                <span className="text-sm text-theme" aria-label="현재 페이지">
+                <span className="text-theme" aria-label="현재 페이지">
                   {item.label}
                 </span>
               ) : (
@@ -51,7 +51,7 @@ export function Breadcrumb() {
                 <>
                   <Link
                     href={item.href}
-                    className="text-sm hover:text-theme transition-colors"
+                    className="hover:text-theme transition-colors"
                   >
                     {item.label}
                   </Link>

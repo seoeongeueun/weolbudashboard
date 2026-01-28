@@ -6,7 +6,7 @@
 export function getLabel(segment: string): string {
   const labelMap: Record<string, string> = {
     course: "강의 목록",
-    add: "등록",
+    add: "강의 등록",
     auth: "회원",
     login: "로그인",
     signup: "회원가입",
