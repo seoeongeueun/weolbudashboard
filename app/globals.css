@@ -7,6 +7,7 @@
   --error: #ff1f1f;
   --theme: #1f5af2;
   --secondary: #e4e4e4;
+  --skeleton: #b7b7b7;
 }
 
 @theme inline {
