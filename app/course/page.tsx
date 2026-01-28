@@ -42,7 +42,6 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
         <SortDropdown currentSort={sortBy} />
       </div>
       <CourseList />
-      <Button label={"수강 신청하기"} variant="primary" size="large" />
     </>
   );
 }

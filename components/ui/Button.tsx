@@ -26,7 +26,7 @@ export function Button({
       onClick={onClick}
       className={twMerge(
         clsx(
-          "pointer-events-auto flex items-center justify-center text-center py-3 px-4 rounded-sm focus:outline-none focus:ring-2 focus:ring-theme focus:ring-offset-2 hover:opacity-80 transition-opacity",
+          "pointer-events-auto flex items-center justify-center text-center py-3 px-4 rounded-sm focus:outline-none focus:ring-0 hover:opacity-80 transition-opacity",
           variant === "primary" && "bg-theme text-white",
           variant === "secondary" && "bg-secondary text-black",
           size === "small" && "w-20",

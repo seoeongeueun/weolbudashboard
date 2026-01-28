@@ -1,5 +1,8 @@
 import { CourseCard } from "./CourseCard";
 import type { CourseResponse } from "@/types";
+import { enrollCourses } from "@/app/course/action";
+import { Button } from "@/components/ui";
+
 export function CourseList() {
   //test용 CourseCard 3개 작성
   const courses: CourseResponse[] = [
@@ -134,10 +137,25 @@ export function CourseList() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 overflow-y-auto py-2">
-      {courses.map((course) => (
-        <CourseCard key={course.id} course={course} />
-      ))}
-    </div>
+    <form
+      action={enrollCourses}
+      className="flex flex-col h-full overflow-y-hidden overflow-x-visible relative"
+    >
+      <section className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full">
+        {courses.map((course) => (
+          <CourseCard key={course.id} course={course} />
+        ))}
+      </section>
+
+      {/* TODO: 무한스크롤용 스크롤 감지 옵저버 추가 필요 */}
+      <footer className="z-30 bg-transparent pt-4 sticky w-full bottom-0 pointer-events-none">
+        <Button
+          type="submit"
+          label={"수강 신청하기"}
+          variant="primary"
+          size="large"
+        />
+      </footer>
+    </form>
   );
 }

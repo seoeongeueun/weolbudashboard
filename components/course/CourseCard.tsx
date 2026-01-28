@@ -19,8 +19,8 @@ export function CourseCard({ course, isChecked = false }: CourseCardProps) {
       <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
         <input
           type="checkbox"
-          checked={isChecked}
-          //onChange={(e) => onCheckboxChange?.(e.target.checked)}
+          name="courseId"
+          value={course.id}
           className="absolute z-20 -left-2 -top-2 w-6 h-6 border border-skeleton rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
           aria-label={`${course.title} 강의 선택`}
         />
