@@ -23,8 +23,21 @@ export interface CourseResponse extends Course {
   currentStudents: number;
 }
 
+//페이지네이션 정보를 포함한 강의 목록 응답 타입
+export interface CourseApiResponse {
+  content: CourseResponse[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+  };
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
 // 강의 정렬 옵션 타입
-export type SortOption = "latest" | "mostStudents" | "highestStudentRate";
+export type SortOption = "recent" | "popular" | "rate";
 export interface SortDropdownOptions {
   label: string;
   value: SortOption;

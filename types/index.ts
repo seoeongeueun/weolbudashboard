@@ -5,4 +5,5 @@ export type {
   CourseResponse,
   SortOption,
   SortDropdownOptions,
+  CourseApiResponse,
 } from "./course";

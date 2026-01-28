@@ -6,7 +6,7 @@ import { getQueryClient } from "@/lib/query/queryClient";
 
 /**
  * url 쿼리 파라미터를 파싱해서 정렬 기준을 추출
- * @example /course?sort=latest → { sort: "latest" }
+ * @example /course?sort=recent → { sort: "recent" }
  */
 interface CoursePageProps {
   searchParams: Promise<{ sort?: SortOption }>;
@@ -23,7 +23,7 @@ interface CoursePageProps {
  */
 export default async function CoursePage({ searchParams }: CoursePageProps) {
   const params = await searchParams;
-  const sortBy = params.sort || "latest";
+  const sortBy = params.sort || "recent";
 
   // 서버에서 QueryClient 생성 (각 요청마다 새로 생성)
   const queryClient = getQueryClient();
