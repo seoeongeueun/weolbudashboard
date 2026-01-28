@@ -14,17 +14,19 @@ export function CourseCard({ course }: CourseCardProps) {
 
   return (
     <article className="w-full h-48 p-2 flex gap-2 flex-col shadow-sm rounded-sm">
-      <div
-        className="w-full h-[60%] bg-skeleton rounded-sm"
-        aria-hidden="true"
-      ></div>
-      <div className="flex flex-col gap-1 justify-between w-full h-[40%] truncate">
-        <h2 className="font-bold text-base">{course.title}</h2>
-        <p className="text-xs text-skeleton overflow-hidden overflow-ellipsis">
-          {course.description}
-        </p>
-        <footer className="flex flex-row justify-between items-center gap-1">
-          <span className="text-xs">{`${course.instructorName} 강사`}</span>
+      <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
+        <input
+          type="checkbox"
+          className="absolute z-20 -left-2 -top-2 w-6 h-6 border border-skeleton rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
+          aria-label={`${course.title} 강의 선택`}
+        />
+        <figcaption className="absolute bottom-0 flex flex-col items-end justify-between gap-1 p-2 w-full h-full">
+          <div
+            className="text-xs rounded-sm w-fit text-white bg-black/20 px-2 py-1 drop-shadow-xs"
+            aria-label="수강생 현황"
+          >
+            {`${course.currentStudents} / ${course.maxStudents}명`}
+          </div>
           <div
             className="flex flex-row w-fit gap-1"
             role="region"
@@ -34,6 +36,20 @@ export function CourseCard({ course }: CourseCardProps) {
               <Tag key={tag.label} label={tag.label} color={tag.color} />
             ))}
           </div>
+        </figcaption>
+      </figure>
+      <div className="flex flex-col gap-0.5 justify-between w-full h-[40%] truncate">
+        <h2 className="font-bold text-base overflow-hidden overflow-ellipsis">
+          {course.title}
+        </h2>
+        <p className="text-xs text-skeleton overflow-hidden overflow-ellipsis">
+          {course.description}
+        </p>
+        <footer className="flex flex-row justify-between items-center gap-1">
+          <address className="text-xs not-italic">{`${course.instructorName} 강사`}</address>
+          <span className="text-xs" aria-label="가격">
+            {course.price === 0 ? "무료" : `${course.price.toLocaleString()}원`}
+          </span>
         </footer>
       </div>
     </article>
