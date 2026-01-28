@@ -21,7 +21,7 @@ export function CourseCard({ course, isChecked = false }: CourseCardProps) {
           type="checkbox"
           name="courseId"
           value={course.id}
-          className="absolute z-20 -left-2 -top-2 w-6 h-6 border border-skeleton rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
+          className="absolute z-20 -left-2 -top-2 w-6 h-6 opacity-90 rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
           aria-label={`${course.title} 강의 선택`}
         />
         <figcaption className="absolute bottom-0 flex flex-col items-end justify-between gap-1 p-2 w-full h-full">
