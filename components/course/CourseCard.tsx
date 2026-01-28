@@ -3,9 +3,11 @@ import { Tag } from "@/components/ui";
 
 export interface CourseCardProps {
   course: CourseResponse;
+  isChecked?: boolean;
+  onCheckboxChange?: (isChecked: boolean) => void;
 }
 
-export function CourseCard({ course }: CourseCardProps) {
+export function CourseCard({ course, isChecked = false }: CourseCardProps) {
   const tags = [
     { label: "무료", color: "#1f5af2" },
     { label: "인기", color: "#AB50DE" },
@@ -17,6 +19,8 @@ export function CourseCard({ course }: CourseCardProps) {
       <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
         <input
           type="checkbox"
+          checked={isChecked}
+          //onChange={(e) => onCheckboxChange?.(e.target.checked)}
           className="absolute z-20 -left-2 -top-2 w-6 h-6 border border-skeleton rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
           aria-label={`${course.title} 강의 선택`}
         />
