@@ -32,7 +32,7 @@ export function Button({
           size === "small" && "w-20",
           size === "medium" && "w-32",
           size === "large" && "w-full",
-          disabled && "cursor-default text-gray-400 hover:opacity-100",
+          disabled && "cursor-default! bg-skeleton hover:opacity-100",
         ),
       )}
     >
