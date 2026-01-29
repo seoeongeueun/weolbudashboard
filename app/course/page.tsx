@@ -3,7 +3,8 @@ import { SortDropdown } from "@/components/course";
 import type { SortOption } from "@/types";
 import { CourseList, CourseSelectCounter } from "@/components/course";
 import { getQueryClient } from "@/lib/query/queryClient";
-import { courseQueries } from "@/lib/query/courseQueries";
+import { courseKeys } from "@/lib/query/courseQueries";
+import { fetchCoursesServer } from "@/lib/api/course";
 
 /**
  * url 쿼리 파라미터를 파싱해서 정렬 기준을 추출
@@ -29,8 +30,14 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
   // 서버에서 QueryClient 생성 (각 요청마다 새로 생성)
   const queryClient = getQueryClient();
 
-  // 서버에서 초기 데이터 prefetch (첫 페이지만)
-  await queryClient.prefetchInfiniteQuery(courseQueries.infinite(sortBy));
+  // 서버에서 초기 데이터 fetch
+  const initialData = await fetchCoursesServer(sortBy);
+
+  // InfiniteQuery 형식으로 변환해서 QueryClient에 데이터 주입
+  queryClient.setQueryData(courseKeys.list(sortBy), {
+    pages: [initialData], //배열로 감싸서
+    pageParams: [0], //첫 페이지 param 명시
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
