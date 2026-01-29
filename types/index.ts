@@ -3,6 +3,7 @@ export type {
   SignupFormData,
   LoginFormData,
   LoginApiResponse,
+  UserProfile,
 } from "./auth";
 export type {
   Course,

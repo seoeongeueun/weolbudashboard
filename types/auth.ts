@@ -16,6 +16,7 @@ export interface SignupFormData {
  */
 export type LoginFormData = Pick<SignupFormData, "email" | "password" | "role">;
 
+// 로그인 API 응답 타입
 export interface LoginApiResponse {
   accessToken: string;
   tokenType: string;
@@ -26,4 +27,10 @@ export interface LoginApiResponse {
     role: Role;
     phone: string;
   };
+}
+
+// 저장할 유저 정보 타입
+export interface UserProfile {
+  name: string;
+  role: Role;
 }

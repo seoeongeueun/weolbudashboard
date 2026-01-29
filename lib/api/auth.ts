@@ -1,4 +1,4 @@
-import type { SignupFormData, LoginFormData } from "@/types";
+import type { SignupFormData, LoginFormData, UserProfile } from "@/types";
 import { apiRequest } from "./client";
 
 /**
@@ -23,4 +23,15 @@ export async function loginUser(payload: LoginFormData) {
     method: "POST",
     data: payload,
   });
+}
+
+/**
+ * 유저 정보를 가져오는 API 호출
+ * @returns 유저 정보 (이름 + 역할)
+ */
+export async function fetchUserProfile() {
+  const data = await apiRequest<{ user: UserProfile | null }>(
+    "/api/users/profile",
+  );
+  return data.user;
 }
