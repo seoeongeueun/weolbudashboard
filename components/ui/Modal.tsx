@@ -20,8 +20,8 @@ const ModalMessage: Record<
     title: "수강 신청 결과",
   },
   "enrollment-failure": {
-    title: "수강 신청 실패",
-    context: "문제가 발생했습니다.\n다시 시도해주세요.",
+    title: "수강 신청 오류",
+    context: "수강 신청을 할 수 없습니다.\n선택된 강의가 있는지 확인해주세요.",
   },
   "login-required": {
     title: "로그인 요청",
