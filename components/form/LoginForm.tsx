@@ -61,9 +61,7 @@ export function LoginForm() {
 
   return (
     <>
-      {showModal && (
-        <Modal message="로그인이 필요합니다." onClose={closeModal} />
-      )}
+      {showModal && <Modal type="login-required" onClose={closeModal} />}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-4"
