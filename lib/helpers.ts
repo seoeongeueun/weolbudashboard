@@ -29,3 +29,19 @@ export function lightenColor(color: string, amount: number = 0.2): string {
 
   return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
 }
+
+// 숫자를 한국 전화번호 형식으로 변환 ***-****-****
+export function formatKoreanPhone(value: string) {
+  // 숫자만 남기기
+  const numbers = value.replace(/\D/g, "");
+
+  if (numbers.length <= 3) {
+    return numbers;
+  }
+
+  if (numbers.length <= 7) {
+    return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+  }
+
+  return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+}
