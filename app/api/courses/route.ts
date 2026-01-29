@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiRequest } from "@/lib/api/client";
 import type { CourseApiResponse, SortOption } from "@/types";
+import { BASE_URL } from "@/lib/config";
 
 /**
  * 강의 목록 조회 API
@@ -16,12 +17,7 @@ import type { CourseApiResponse, SortOption } from "@/types";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-
-    const baseUrl = process.env.BASE_URL;
-    if (!baseUrl) {
-      throw new Error("BASE_URL is not defined in environment variables");
-    }
-    const url = new URL("/api/courses", baseUrl);
+    const url = new URL("/api/courses", BASE_URL);
 
     // 쿼리 파라미터 파싱 및 검증
     const page = Math.max(0, parseInt(searchParams.get("page") || "0", 10));
