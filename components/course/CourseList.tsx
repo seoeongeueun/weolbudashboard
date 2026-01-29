@@ -34,8 +34,8 @@ export function CourseList({ sortBy }: CourseListProps) {
       className="flex flex-col h-full overflow-hidden relative"
     >
       <section className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full">
-        {courses.map((course) => (
-          <CourseCard key={course.id} course={course} />
+        {courses.map((course, i) => (
+          <CourseCard key={course.id + " " + i} course={course} />
         ))}
 
         <InfiniteScrollObserver
