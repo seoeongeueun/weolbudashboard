@@ -31,6 +31,24 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60, // 1시간
     });
 
+    // 필요한 유저 정보만 쿠키에 저장 (이름, 역할)
+    cookieStore.set(
+      "user",
+      encodeURIComponent(
+        JSON.stringify({
+          name: res.user.name,
+          role: res.user.role,
+        }),
+      ),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60,
+      },
+    );
+
     return NextResponse.json(res, { status: 200 });
   } catch (error) {
     const apiError = error as ApiError;
