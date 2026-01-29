@@ -1,4 +1,4 @@
-import type { SignupFormData } from "@/types/auth";
+import type { SignupFormData, LoginFormData } from "@/types";
 import { apiRequest } from "./client";
 
 /**
@@ -15,10 +15,10 @@ export async function signupUser(payload: SignupFormData) {
 
 /**
  * 로그인 폼의 데이터로 API 호출
- * @param payload { email: string; password: string } 로그인 폼 데이터
+ * @param payload LoginFormData 로그인 폼 데이터
  * @returns API 응답 (에러 처리는 apiRequest에서 처리됨)
  */
-export async function loginUser(payload: { email: string; password: string }) {
+export async function loginUser(payload: LoginFormData) {
   return await apiRequest("/api/users/login", {
     method: "POST",
     data: payload,

@@ -2,10 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { FormInput, FormRadioGroup } from "@/components/ui";
-import type { LoginFormData } from "@/types/auth";
 import { Button, Message } from "@/components/ui";
 import { loginUser } from "@/lib/api/auth";
-import type { RequestStatus } from "@/types";
+import type { RequestStatus, LoginFormData } from "@/types";
 import { useState } from "react";
 
 export function LoginForm() {
