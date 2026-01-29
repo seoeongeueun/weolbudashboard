@@ -2,10 +2,12 @@
 
 import { useForm } from "react-hook-form";
 import { FormInput, FormRadioGroup } from "@/components/ui";
-import { Button, Message } from "@/components/ui";
+import { Button, Message, Modal } from "@/components/ui";
 import { loginUser } from "@/lib/api/auth";
 import type { RequestStatus, LoginFormData } from "@/types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export function LoginForm() {
   const {
@@ -17,15 +19,30 @@ export function LoginForm() {
       role: "STUDENT", // 기본값은 일반 회원
     },
   });
+  const params = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [status, setStatus] = useState<RequestStatus>({ type: "idle" });
+
+  // 렌더링시 쿼리 파라미터에 따라 모달 표시 여부 결정
+  const showModal = useMemo<boolean>(() => {
+    return params.get("reason") === "auth";
+  }, [params]);
+
+  //모달을 닫을 때는 url에서 reason 쿼리 파라미터를 제거
+  const closeModal = () => {
+    const next = new URLSearchParams(params.toString());
+    next.delete("reason");
+    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+  };
 
   const onSubmit = async (data: LoginFormData) => {
     console.log(data);
 
     try {
       const result = await loginUser(data);
-      console.log("로그인 성공: ", result);
+
       setStatus({
         type: "success",
         message: "로그인 성공: 메인 페이지로 이동합니다.",
@@ -39,62 +56,67 @@ export function LoginForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full flex flex-col gap-4"
-    >
-      <FormInput
-        label="이메일"
-        id="email"
-        type="email"
-        placeholder="example@email.com"
-        error={errors.email?.message}
-        {...register("email", {
-          required: "이메일을 입력해주세요",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "올바른 이메일 형식이 아닙니다",
-          },
-        })}
-      />
+    <>
+      {showModal && (
+        <Modal message="로그인이 필요합니다." onClose={closeModal} />
+      )}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full flex flex-col gap-4"
+      >
+        <FormInput
+          label="이메일"
+          id="email"
+          type="email"
+          placeholder="example@email.com"
+          error={errors.email?.message}
+          {...register("email", {
+            required: "이메일을 입력해주세요",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "올바른 이메일 형식이 아닙니다",
+            },
+          })}
+        />
 
-      <FormInput
-        label="비밀번호"
-        id="password"
-        type="password"
-        placeholder="********"
-        error={errors.password?.message}
-        {...register("password", {
-          required: "비밀번호를 입력해주세요",
-          minLength: {
-            value: 6, //최소 6자
-            message: "비밀번호는 6자 이상이어야 합니다",
-          },
-          maxLength: {
-            value: 10, //최대 10자
-            message: "비밀번호는 10자 이하여야 합니다",
-          },
-        })}
-      />
-      <FormRadioGroup
-        legend="회원 유형"
-        options={[
-          { label: "회원", value: "STUDENT" },
-          { label: "강사", value: "INSTRUCTOR" },
-        ]}
-        error={errors.role?.message}
-        {...register("role", {
-          required: "회원 유형을 선택해주세요",
-        })}
-      />
-      <Message status={status} />
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        label={isSubmitting ? "처리 중..." : "로그인"}
-        variant="primary"
-        size="large"
-      />
-    </form>
+        <FormInput
+          label="비밀번호"
+          id="password"
+          type="password"
+          placeholder="********"
+          error={errors.password?.message}
+          {...register("password", {
+            required: "비밀번호를 입력해주세요",
+            minLength: {
+              value: 6, //최소 6자
+              message: "비밀번호는 6자 이상이어야 합니다",
+            },
+            maxLength: {
+              value: 10, //최대 10자
+              message: "비밀번호는 10자 이하여야 합니다",
+            },
+          })}
+        />
+        <FormRadioGroup
+          legend="회원 유형"
+          options={[
+            { label: "회원", value: "STUDENT" },
+            { label: "강사", value: "INSTRUCTOR" },
+          ]}
+          error={errors.role?.message}
+          {...register("role", {
+            required: "회원 유형을 선택해주세요",
+          })}
+        />
+        <Message status={status} />
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          label={isSubmitting ? "처리 중..." : "로그인"}
+          variant="primary"
+          size="large"
+        />
+      </form>
+    </>
   );
 }
