@@ -7,7 +7,7 @@ import { LoaderCircle } from "lucide-react";
 interface InfiniteScrollObserverProps {
   hasMore: boolean;
   isLoading: boolean;
-  onLoadMore: () => void;
+  onLoadMore: () => Promise<unknown> | void;
 }
 
 /**
@@ -29,6 +29,9 @@ export function InfiniteScrollObserver({
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoading) {
           onLoadMore();
+          if (observerRef.current) {
+            observer.unobserve(observerRef.current);
+          }
         }
       },
       {
