@@ -7,3 +7,4 @@ export type {
   SortDropdownOptions,
   CourseApiResponse,
 } from "./course";
+export type { RequestStatus } from "./api";
