@@ -15,3 +15,15 @@ export interface SignupFormData {
  * SignupFormData에서 email, password, role만 사용
  */
 export type LoginFormData = Pick<SignupFormData, "email" | "password" | "role">;
+
+export interface LoginApiResponse {
+  accessToken: string;
+  tokenType: string;
+  user: {
+    id: number;
+    email: string;
+    name: string;
+    role: Role;
+    phone: string;
+  };
+}
