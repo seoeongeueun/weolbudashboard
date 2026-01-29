@@ -12,5 +12,7 @@ export type {
   SortOption,
   SortDropdownOptions,
   CourseApiResponse,
+  EnrollmentResponse,
+  EnrollmentRequestStatus,
 } from "./course";
 export type { RequestStatus } from "./api";

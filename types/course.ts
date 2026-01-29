@@ -42,3 +42,23 @@ export interface SortDropdownOptions {
   label: string;
   value: SortOption;
 }
+
+// 배치 수강 신청 결과 타입
+export interface EnrollmentResponse {
+  success: Array<{
+    enrollmentId: number;
+    courseId: number;
+    courseTitle: string;
+  }>;
+  failed: Array<{
+    courseId: number;
+    reason: string;
+  }>;
+}
+
+// 수강 신청 상태 타입
+export interface EnrollmentRequestStatus {
+  success: boolean;
+  message: string;
+  data: EnrollmentResponse | null;
+}
