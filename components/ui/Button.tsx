@@ -29,7 +29,7 @@ export function Button({
           "pointer-events-auto flex items-center justify-center text-center py-3 px-4 rounded-sm focus:outline-none focus:ring-0 hover:opacity-80 transition-opacity",
           variant === "primary" && "bg-theme text-white",
           variant === "secondary" && "bg-secondary text-black",
-          size === "small" && "w-20",
+          size === "small" && "w-fit max-w-20 p-2 text-sm",
           size === "medium" && "w-32",
           size === "large" && "w-full",
           disabled && "cursor-default! bg-skeleton hover:opacity-100",
