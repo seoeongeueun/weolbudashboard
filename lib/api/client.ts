@@ -65,7 +65,8 @@ export async function apiRequest<T>(
     : await res.text().catch(() => undefined);
 
   if (!res.ok) {
-    throw new ApiError("Request failed", res.status, body);
+    const errorMessage = body?.message || body?.error || "Request failed";
+    throw new ApiError(errorMessage, res.status, body);
   }
 
   return body as T;
