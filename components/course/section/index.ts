@@ -1,0 +1,1 @@
+export { RecentCourse } from "./RecentCourse";

@@ -1,10 +1,12 @@
-import { infiniteQueryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import type { SortOption, CourseApiResponse } from "@/types";
 
 export const courseKeys = {
   all: ["courses"] as const,
   lists: () => [...courseKeys.all, "list"] as const,
   list: (sort: SortOption) => [...courseKeys.lists(), sort] as const,
+  listWithSize: (sort: SortOption, size: number) =>
+    [...courseKeys.list(sort), size] as const,
 };
 
 /**
@@ -16,9 +18,10 @@ export const courseKeys = {
 async function fetchCourses(
   pageParam: number,
   sort: SortOption,
+  size = 10,
 ): Promise<CourseApiResponse> {
   const response = await fetch(
-    `/api/courses?page=${pageParam}&size=10&sort=${sort}`,
+    `/api/courses?page=${pageParam}&size=${size}&sort=${sort}`,
   );
 
   if (!response.ok) {
@@ -45,5 +48,11 @@ export const courseQueries = {
         if (lastPage.last) return undefined;
         return lastPage.pageable.pageNumber + 1;
       },
+    }),
+  // 단일 페이지 강의 목록 (현재는 홈 화면에서 신규 강의 조회에 사용)
+  list: (sort: SortOption, size = 10) =>
+    queryOptions({
+      queryKey: courseKeys.listWithSize(sort, size),
+      queryFn: () => fetchCourses(0, sort, size),
     }),
 };
