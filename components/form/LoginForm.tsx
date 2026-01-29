@@ -47,6 +47,10 @@ export function LoginForm() {
         type: "success",
         message: "로그인 성공: 메인 페이지로 이동합니다.",
       });
+
+      setTimeout(() => {
+        router.replace("/");
+      }, 2000);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "오류가 발생했습니다.";
@@ -111,7 +115,7 @@ export function LoginForm() {
         <Message status={status} />
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || status.type === "success"}
           label={isSubmitting ? "처리 중..." : "로그인"}
           variant="primary"
           size="large"
