@@ -26,7 +26,7 @@ export function MinimizedCourse({
 
   return (
     <section className="w-full h-fit">
-      <h1 className="text-lg font-bold">{getTitleText()}</h1>
+      <h1 className="text-lg font-bold py-2">{getTitleText()}</h1>
 
       <div className="w-full h-52 overflow-x-auto">
         <div className="relative grid grid-flow-col auto-cols-[minmax(300px,1fr)] gap-4">
