@@ -4,10 +4,15 @@ import { Tag } from "@/components/ui";
 export interface CourseCardProps {
   course: CourseResponse;
   isChecked?: boolean;
+  readonly?: boolean; // 체크박스 노출 여부
   onCheckboxChange?: (isChecked: boolean) => void;
 }
 
-export function CourseCard({ course, isChecked = false }: CourseCardProps) {
+export function CourseCard({
+  course,
+  isChecked = false,
+  readonly = false,
+}: CourseCardProps) {
   const tags = [
     { label: "무료", color: "#1f5af2" },
     { label: "인기", color: "#AB50DE" },
@@ -17,13 +22,15 @@ export function CourseCard({ course, isChecked = false }: CourseCardProps) {
   return (
     <article className="w-full h-48 p-2 flex gap-2 flex-col shadow-sm rounded-sm">
       <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
-        <input
-          type="checkbox"
-          name="courseId"
-          value={course.id}
-          className="absolute z-20 -left-2 -top-2 w-6 h-6 opacity-90 rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
-          aria-label={`${course.title} 강의 선택`}
-        />
+        {!readonly && (
+          <input
+            type="checkbox"
+            name="courseId"
+            value={course.id}
+            className="absolute z-20 -left-2 -top-2 w-6 h-6 opacity-90 rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
+            aria-label={`${course.title} 강의 선택`}
+          />
+        )}
         <figcaption className="absolute bottom-0 flex flex-col items-end justify-between gap-1 p-2 w-full h-full">
           <div
             className="text-xs rounded-sm w-fit text-white bg-black/20 px-2 py-1 drop-shadow-xs"

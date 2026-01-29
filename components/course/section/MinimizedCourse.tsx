@@ -36,7 +36,7 @@ export function MinimizedCourse({
             </p>
           )}
           {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={course.id} course={course} readonly={true} />
           ))}
         </div>
       </div>
