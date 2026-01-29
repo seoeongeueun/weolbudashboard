@@ -12,3 +12,15 @@ export async function signupUser(payload: SignupFormData) {
     data: payload,
   });
 }
+
+/**
+ * 로그인 폼의 데이터로 API 호출
+ * @param payload { email: string; password: string } 로그인 폼 데이터
+ * @returns API 응답 (에러 처리는 apiRequest에서 처리됨)
+ */
+export async function loginUser(payload: { email: string; password: string }) {
+  return await apiRequest("/api/users/login", {
+    method: "POST",
+    data: payload,
+  });
+}

@@ -3,7 +3,10 @@
 import { useForm } from "react-hook-form";
 import { FormInput, FormRadioGroup } from "@/components/ui";
 import type { LoginFormData } from "@/types/auth";
-import { Button } from "@/components/ui";
+import { Button, Message } from "@/components/ui";
+import { loginUser } from "@/lib/api/auth";
+import type { RequestStatus } from "@/types";
+import { useState } from "react";
 
 export function LoginForm() {
   const {
@@ -16,9 +19,24 @@ export function LoginForm() {
     },
   });
 
+  const [status, setStatus] = useState<RequestStatus>({ type: "idle" });
+
   const onSubmit = async (data: LoginFormData) => {
     console.log(data);
-    // TODO: POST Login 호출 / 에러 처리 필요
+
+    try {
+      const result = await loginUser(data);
+      console.log("로그인 성공: ", result);
+      setStatus({
+        type: "success",
+        message: "로그인 성공: 메인 페이지로 이동합니다.",
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "오류가 발생했습니다.";
+      console.error("로그인 실패: ", message);
+      setStatus({ type: "error", message });
+    }
   };
 
   return (
@@ -70,6 +88,7 @@ export function LoginForm() {
           required: "회원 유형을 선택해주세요",
         })}
       />
+      <Message status={status} />
       <Button
         type="submit"
         disabled={isSubmitting}
