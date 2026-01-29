@@ -24,7 +24,5 @@ export function CourseSelectCounter() {
     return () => form.removeEventListener("change", updateCount);
   }, []);
 
-  return (
-    <div className="text-sm font-medium">선택된 강의 {selectedCount}개</div>
-  );
+  return <div className="text-sm">선택된 강의 {selectedCount}개</div>;
 }
