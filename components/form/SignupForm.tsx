@@ -2,9 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { FormInput, FormRadioGroup } from "@/components/ui";
-import type { SignupFormData } from "@/types/auth";
+import type { SignupFormData, RequestStatus } from "@/types";
 import { Button } from "@/components/ui";
-
+import { signupUser } from "@/lib/api/auth";
+import { formatKoreanPhone } from "@/lib/helpers";
+import { useState } from "react";
+import { TriangleAlert, CircleCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 /**
  * react hook form을 이용한 회원가입 폼 컴포넌트
  * @validation
@@ -25,9 +29,30 @@ export function SignupForm() {
     },
   });
 
+  const router = useRouter();
+  const [status, setStatus] = useState<RequestStatus>({ type: "idle" });
+
   const onSubmit = async (data: SignupFormData) => {
-    console.log(data);
-    // TODO: POST Signup 호출 / 에러 처리 필요
+    setStatus({ type: "idle" }); // 제출 시 상태 초기화
+
+    try {
+      const result = await signupUser(data);
+      console.log("회원 가입 성공: ", result);
+      setStatus({
+        type: "success",
+        message: "회원 가입이 완료되었습니다. 로그인 페이지로 이동합니다.",
+      });
+
+      // 2초 후 로그인 페이지로 리다이렉트
+      setTimeout(() => {
+        router.replace("/auth/login");
+      }, 2000);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "오류가 발생했습니다.";
+      console.error("회원 가입 실패: ", message);
+      setStatus({ type: "error", message });
+    }
   };
 
   return (
@@ -68,7 +93,9 @@ export function SignupForm() {
         error={errors.phone?.message}
         {...register("phone", {
           required: "전화번호를 입력해주세요",
-          // 010으로 시작, 하이픈은 선택적
+          onChange: (e) => {
+            e.target.value = formatKoreanPhone(e.target.value); // 숫자 입력시 자동으로 하이픈 추가
+          },
           pattern: {
             value: /^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$/,
             message: "올바른 전화번호 형식이 아닙니다",
@@ -115,10 +142,29 @@ export function SignupForm() {
           required: "회원 유형을 선택해주세요",
         })}
       />
-
+      {status.type === "error" && (
+        <aside
+          role="alert"
+          aria-live="polite"
+          className="flex flex-row gap-1 items-center p-3 bg-error/10 border border-error rounded-sm"
+        >
+          <TriangleAlert className="text-error w-4 h-4" aria-hidden="true" />
+          <span className="text-error">{status.message}</span>
+        </aside>
+      )}
+      {status.type === "success" && (
+        <aside
+          role="alert"
+          aria-live="polite"
+          className="flex flex-row gap-1 items-center p-3 bg-theme/10 border border-theme rounded-sm"
+        >
+          <CircleCheck className="text-theme w-4 h-4" aria-hidden="true" />
+          <span className="text-theme">{status.message}</span>
+        </aside>
+      )}
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || status.type === "success"}
         label={isSubmitting ? "처리 중..." : "회원가입"}
       />
     </form>
