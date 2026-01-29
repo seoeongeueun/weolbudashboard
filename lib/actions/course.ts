@@ -1,3 +1,5 @@
+"use server";
+
 import type { SortOption, CourseApiResponse } from "@/types";
 import { BASE_URL } from "@/lib/config";
 /**

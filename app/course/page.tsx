@@ -4,7 +4,7 @@ import type { SortOption } from "@/types";
 import { CourseList, CourseSelectCounter } from "@/components/course";
 import { getQueryClient } from "@/lib/query/queryClient";
 import { courseKeys } from "@/lib/query/courseQueries";
-import { fetchCoursesServer } from "@/lib/api/course";
+import { fetchCoursesServer } from "@/lib/actions";
 
 /**
  * url 쿼리 파라미터를 파싱해서 정렬 기준을 추출

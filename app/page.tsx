@@ -2,8 +2,8 @@ import { MinimizedCourse } from "@/components/course/section";
 import { Profile } from "@/components/auth";
 import Link from "next/link";
 import { Button } from "@/components/ui";
-import { fetchCoursesServer } from "@/lib/api/course";
-import { fetchUserProfileFromServer } from "@/lib/api/auth-server";
+import { fetchCoursesServer } from "@/lib/actions";
+import { fetchUserProfileFromServer } from "@/lib/actions";
 
 export const metadata = {
   title: "월급쟁이부자들 - 홈 화면",

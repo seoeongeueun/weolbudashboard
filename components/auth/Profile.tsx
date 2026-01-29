@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { UserProfile } from "@/types";
 import { getRoleLabel } from "@/lib/helpers";
-import { logout } from "@/lib/api/auth-server";
+import { logout } from "@/lib/actions";
 
 interface ProfileProps {
   user: UserProfile | null;
