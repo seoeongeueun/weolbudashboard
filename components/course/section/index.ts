@@ -1,1 +1,1 @@
-export { RecentCourse } from "./RecentCourse";
+export { MinimizedCourse } from "./MinimizedCourse";
