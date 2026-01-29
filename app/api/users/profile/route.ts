@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import type { UserProfile } from "@/types";
 
 /**
  * 유저 프로필 조회 API
@@ -12,7 +13,7 @@ export async function GET() {
   if (!raw) return NextResponse.json({ user: null });
 
   try {
-    const user = JSON.parse(decodeURIComponent(raw));
+    const user: UserProfile = JSON.parse(decodeURIComponent(raw));
     return NextResponse.json({ user });
   } catch {
     return NextResponse.json({ user: null });

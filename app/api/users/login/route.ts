@@ -3,7 +3,7 @@ import { BASE_URL } from "@/lib/config";
 import { apiRequest } from "@/lib/api/client";
 import type { ApiError } from "@/lib/api/client";
 import { cookies } from "next/headers";
-import type { LoginApiResponse } from "@/types";
+import type { LoginApiResponse, UserProfile, Role } from "@/types";
 
 /**
  * 로그인 API
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
       encodeURIComponent(
         JSON.stringify({
           name: res.user.name,
-          role: res.user.role,
-        }),
+          role: res.user.role as Role,
+        } as UserProfile),
       ),
       {
         httpOnly: true,

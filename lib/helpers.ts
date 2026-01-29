@@ -45,3 +45,17 @@ export function formatKoreanPhone(value: string) {
 
   return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
 }
+/**
+ * Role을 한글로 변환
+ * @param role Role
+ * @returns string 한글 역할명
+ */
+import { Role } from "@/types/auth";
+
+export function getRoleLabel(role: Role): string {
+  const roleMap: Record<Role, string> = {
+    STUDENT: "회원",
+    INSTRUCTOR: "강사",
+  };
+  return roleMap[role] || role;
+}
