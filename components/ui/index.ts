@@ -7,3 +7,4 @@ export { Breadcrumb } from "./Breadcrumb";
 export type { DropdownOption } from "./Dropdown";
 export { Tag } from "./Tag";
 export { Message } from "./Message";
+export { Modal } from "./Modal";
