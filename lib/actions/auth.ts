@@ -30,5 +30,6 @@ export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("accessToken");
   cookieStore.delete("user");
+  cookieStore.delete("recentlyAddedCourseIds");
   redirect("/");
 }
