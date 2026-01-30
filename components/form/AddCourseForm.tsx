@@ -7,6 +7,8 @@ import { addCourse } from "@/lib/api/courses";
 import { Modal } from "@/components/ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { courseKeys } from "@/lib/query/courseQueries";
 
 type ModalState = "success" | "error" | null; // 모달 상태로 모달에 노출할 메시지를 구분한다
 
@@ -28,11 +30,18 @@ export function AddCourseForm() {
   } = useForm<CourseFormData>();
 
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [modal, setModal] = useState<ModalState>(null);
 
   const onSubmit = async (data: CourseFormData) => {
     try {
       await addCourse(data);
+
+      // 강의 목록 쿼리 완전히 제거해서 새로 등록된 강의가 보이게
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] === courseKeys.all[0],
+      });
+
       setModal("success");
     } catch (error) {
       console.error("Failed to add course:", error);
@@ -43,7 +52,7 @@ export function AddCourseForm() {
   const handleClose = () => {
     setModal(null);
 
-    // 강의를 등록 성공한 경우에만 강의 목록 페이지로 이동
+    // 강의를 등록 성공한 경우에만 강의 목록 페이지로 이동 (완전 새로고침)
     if (modal === "success") {
       router.push("/course");
     }
@@ -99,7 +108,11 @@ export function AddCourseForm() {
           })}
         />
 
-        <Button type="submit" disabled={isSubmitting} label="등록하기"></Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          label={isSubmitting ? "등록 중..." : "등록하기"}
+        ></Button>
       </form>
       {modal && (
         <Modal
