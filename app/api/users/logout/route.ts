@@ -11,6 +11,7 @@ export async function POST() {
 
   cookieStore.delete("accessToken");
   cookieStore.delete("user");
+  cookieStore.delete("recentlyAddedCourseIds");
 
   return NextResponse.json({ message: "Logged out" }, { status: 200 });
 }

@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { BASE_URL } from "@/lib/config";
+import { BASE_URL, COOKIE_SETTINGS } from "@/lib/config";
 import { apiRequest } from "@/lib/api/client";
 import type { ApiError } from "@/lib/api/client";
 import { cookies } from "next/headers";
@@ -23,13 +23,7 @@ export async function POST(request: NextRequest) {
     );
 
     const cookieStore = await cookies();
-    cookieStore.set("accessToken", res.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60, // 1시간
-    });
+    cookieStore.set("accessToken", res.accessToken, COOKIE_SETTINGS);
 
     // 필요한 유저 정보만 쿠키에 저장 (이름, 역할)
     cookieStore.set(
@@ -40,13 +34,7 @@ export async function POST(request: NextRequest) {
           role: res.user.role as Role,
         } as UserProfile),
       ),
-      {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60,
-      },
+      COOKIE_SETTINGS,
     );
 
     return NextResponse.json(res, { status: 200 });
