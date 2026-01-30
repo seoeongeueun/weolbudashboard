@@ -4,13 +4,16 @@ import { CourseCard } from "@/components/course";
 interface MinimizedCourseProps {
   sortBy?: SortOption;
   courses: CourseResponse[];
+  title?: string;
 }
 
 export function MinimizedCourse({
   sortBy = "recent",
   courses,
+  title,
 }: MinimizedCourseProps) {
   const getTitleText = () => {
+    if (title) return title;
     switch (sortBy) {
       case "popular":
         return "현재 인기있는 강의";
