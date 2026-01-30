@@ -71,9 +71,19 @@ export default async function AuthPage() {
             />
           )}
         </section>
-        <Link href="/course">
-          <Button size="large" label="전체 강의 보러가기" type="button" />
-        </Link>
+        <footer className="flex flex-col gap-4 items-center w-full h-fit">
+          {userProfile?.role === "INSTRUCTOR" && (
+            <Link
+              href="/course/add"
+              className="underline text-sm underline-offset-2 hover:text-theme"
+            >
+              신규 강의 등록하기
+            </Link>
+          )}
+          <Link href="/course" className="w-full">
+            <Button size="large" label="전체 강의 보러가기" type="button" />
+          </Link>
+        </footer>
       </div>
     </>
   );
