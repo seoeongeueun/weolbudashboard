@@ -28,28 +28,13 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
   const params = await searchParams;
   const sortBy = params.sort || "recent";
 
-  // pages 파라미터가 있을 때만 여러 페이지 prefetch
-  // (없으면 정렬이 막 바뀐 것이므로 1페이지만)
-  const targetPage = params.pages ? parseInt(params.pages) : 1;
-  const prefetchPages = Number.isFinite(targetPage)
-    ? Math.min(Math.max(targetPage, 1), MAX_COURSE_PAGES)
-    : 1;
-
-  // 서버에서 QueryClient 생성
+  // 첫 페이지만 prefetch
   const queryClient = getQueryClient();
+  const firstPage = await fetchCoursesServer(sortBy, COURSES_PAGE_SIZE, 0);
 
-  // 요청된 페이지까지 모두 fetch 해서 렌더
-  const pages = await Promise.all(
-    Array.from({ length: prefetchPages }, (_, i) =>
-      fetchCoursesServer(sortBy, COURSES_PAGE_SIZE, i),
-    ),
-  );
-  const pageParams = Array.from({ length: prefetchPages }, (_, i) => i);
-
-  // InfiniteQuery 형식으로 변환해서 QueryClient에 데이터 주입
   queryClient.setQueryData(courseKeys.infinite(sortBy, COURSES_PAGE_SIZE), {
-    pages,
-    pageParams,
+    pages: [firstPage],
+    pageParams: [0],
   });
 
   return (
