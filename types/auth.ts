@@ -12,9 +12,9 @@ export interface SignupFormData {
 
 /**
  * 로그인 폼 데이터
- * SignupFormData에서 email, password, role만 사용
+ * SignupFormData에서 email, password만 사용
  */
-export type LoginFormData = Pick<SignupFormData, "email" | "password" | "role">;
+export type LoginFormData = Pick<SignupFormData, "email" | "password">;
 
 // 로그인 API 응답 타입
 export interface LoginApiResponse {

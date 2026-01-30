@@ -14,11 +14,7 @@ export function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
-    defaultValues: {
-      role: "STUDENT", // 기본값은 일반 회원
-    },
-  });
+  } = useForm<LoginFormData>();
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -80,7 +76,6 @@ export function LoginForm() {
             },
           })}
         />
-
         <FormInput
           label="비밀번호"
           id="password"
@@ -97,17 +92,6 @@ export function LoginForm() {
               value: 10, //최대 10자
               message: "비밀번호는 10자 이하여야 합니다",
             },
-          })}
-        />
-        <FormRadioGroup
-          legend="회원 유형"
-          options={[
-            { label: "회원", value: "STUDENT" },
-            { label: "강사", value: "INSTRUCTOR" },
-          ]}
-          error={errors.role?.message}
-          {...register("role", {
-            required: "회원 유형을 선택해주세요",
           })}
         />
         <Message status={status} />
