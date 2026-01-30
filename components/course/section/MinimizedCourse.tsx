@@ -30,9 +30,9 @@ export function MinimizedCourse({
       <h1 className="text-lg font-bold py-2">{getTitleText()}</h1>
 
       <div className="w-full h-52 overflow-x-auto">
-        <div className="relative grid grid-flow-col auto-cols-[minmax(300px,1fr)] gap-4">
+        <div className="relative grid grid-flow-col auto-cols-[minmax(300px,1fr)] gap-4 h-full ">
           {courses.length === 0 && (
-            <p className="absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2 h-full text-sm text-skeleton">
+            <p className="absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2 text-sm text-skeleton">
               표시할 강의가 없습니다.
             </p>
           )}
