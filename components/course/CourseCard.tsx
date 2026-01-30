@@ -39,7 +39,7 @@ export function CourseCard({
   }
 
   return (
-    <article className="relative w-full h-48 p-2 flex gap-2 flex-col shadow-sm rounded-sm">
+    <article className="shrink-0 relative w-full h-48 p-2 flex gap-2 flex-col shadow-sm rounded-sm">
       <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
         {!readonly && !course.isFull && (
           <input

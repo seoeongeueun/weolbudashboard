@@ -147,7 +147,7 @@ export function CourseList({ sortBy }: CourseListProps) {
       >
         <section
           ref={listRef}
-          className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full"
+          className="flex flex-col md:grid md:grid-cols-2 gap-4 py-2 overflow-y-auto h-full"
         >
           {visibleCourses.map((course) => (
             <CourseCard
