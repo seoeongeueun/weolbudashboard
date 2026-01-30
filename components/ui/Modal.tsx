@@ -7,7 +7,12 @@ import { Button } from "@/components/ui";
  */
 
 interface ModalProps {
-  type: "enrollment-success" | "enrollment-failure" | "login-required";
+  type:
+    | "enrollment-success"
+    | "enrollment-failure"
+    | "login-required"
+    | "course-added"
+    | "course-failure";
   description?: string;
   onClose: () => void;
 }
@@ -26,6 +31,14 @@ const ModalMessage: Record<
   "login-required": {
     title: "로그인 요청",
     context: "로그인 후 이용 가능한 서비스입니다.",
+  },
+  "course-added": {
+    title: "강의 등록 완료",
+    context: "새 강의가 등록되었습니다.\n강의 목록으로 이동합니다.",
+  },
+  "course-failure": {
+    title: "강의 등록 오류",
+    context: "강의 등록에 실패했습니다.\n다시 시도해주세요.",
   },
 };
 
