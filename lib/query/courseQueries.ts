@@ -3,10 +3,12 @@ import type { SortOption, CourseApiResponse } from "@/types";
 
 export const courseKeys = {
   all: ["courses"] as const,
-  lists: () => [...courseKeys.all, "list"] as const,
-  list: (sort: SortOption) => [...courseKeys.lists(), sort] as const,
-  listWithSize: (sort: SortOption, size: number) =>
-    [...courseKeys.list(sort), size] as const,
+  //무한스크롤 캐시 키
+  infinite: (sort: SortOption, size: number) =>
+    [...courseKeys.all, "infinite", sort, size] as const,
+  //단일 페이지 리스트 키
+  page: (sort: SortOption, size: number, page: number) =>
+    [...courseKeys.all, "page", sort, size, page] as const,
 };
 
 /**
@@ -39,20 +41,18 @@ async function fetchCourses(
  */
 export const courseQueries = {
   //무한 스크롤 강의 목록 쿼리
-  infinite: (sort: SortOption) =>
+  infinite: (sort: SortOption, size = 10) =>
     infiniteQueryOptions({
-      queryKey: courseKeys.list(sort),
-      queryFn: ({ pageParam }) => fetchCourses(pageParam, sort),
+      queryKey: courseKeys.infinite(sort, size),
+      queryFn: ({ pageParam }) => fetchCourses(pageParam, sort, size),
       initialPageParam: 0,
-      getNextPageParam: (lastPage) => {
-        if (lastPage.last) return undefined;
-        return lastPage.pageable.pageNumber + 1;
-      },
+      getNextPageParam: (lastPage) =>
+        lastPage.last ? undefined : lastPage.pageable.pageNumber + 1,
     }),
   // 단일 페이지 강의 목록 (현재는 홈 화면에서 신규 강의 조회에 사용)
   list: (sort: SortOption, size = 10) =>
     queryOptions({
-      queryKey: courseKeys.listWithSize(sort, size),
+      queryKey: courseKeys.page(sort, size, 0),
       queryFn: () => fetchCourses(0, sort, size),
     }),
 };

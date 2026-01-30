@@ -5,13 +5,14 @@ import { CourseList, CourseSelectCounter } from "@/components/course";
 import { getQueryClient } from "@/lib/query/queryClient";
 import { courseKeys } from "@/lib/query/courseQueries";
 import { fetchCoursesServer } from "@/lib/actions";
+import { COURSES_PAGE_SIZE, MAX_COURSE_PAGES } from "@/lib/constants";
 
 /**
- * url 쿼리 파라미터를 파싱해서 정렬 기준을 추출
- * @example /course?sort=recent → { sort: "recent" }
+ * url 쿼리 파라미터를 파싱해서 정렬 기준과 페이지를 추출
+ * @example /course?sort=recent&pages=2 → { sort: "recent", pages: "2" }
  */
 interface CoursePageProps {
-  searchParams: Promise<{ sort?: SortOption }>;
+  searchParams: Promise<{ sort?: SortOption; pages?: string }>;
 }
 
 /**
@@ -27,16 +28,28 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
   const params = await searchParams;
   const sortBy = params.sort || "recent";
 
-  // 서버에서 QueryClient 생성 (각 요청마다 새로 생성)
+  // pages 파라미터가 있을 때만 여러 페이지 prefetch
+  // (없으면 정렬이 막 바뀐 것이므로 1페이지만)
+  const targetPage = params.pages ? parseInt(params.pages) : 1;
+  const prefetchPages = Number.isFinite(targetPage)
+    ? Math.min(Math.max(targetPage, 1), MAX_COURSE_PAGES)
+    : 1;
+
+  // 서버에서 QueryClient 생성
   const queryClient = getQueryClient();
 
-  // 서버에서 초기 데이터 fetch
-  const initialData = await fetchCoursesServer(sortBy);
+  // 요청된 페이지까지 모두 fetch 해서 렌더
+  const pages = await Promise.all(
+    Array.from({ length: prefetchPages }, (_, i) =>
+      fetchCoursesServer(sortBy, COURSES_PAGE_SIZE, i),
+    ),
+  );
+  const pageParams = Array.from({ length: prefetchPages }, (_, i) => i);
 
   // InfiniteQuery 형식으로 변환해서 QueryClient에 데이터 주입
-  queryClient.setQueryData(courseKeys.list(sortBy), {
-    pages: [initialData], //배열로 감싸서
-    pageParams: [0], //첫 페이지 param 명시
+  queryClient.setQueryData(courseKeys.infinite(sortBy, COURSES_PAGE_SIZE), {
+    pages,
+    pageParams,
   });
 
   return (
