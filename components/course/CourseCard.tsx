@@ -23,9 +23,6 @@ export function CourseCard({
 }: CourseCardProps) {
   const tags = [];
 
-  // 최대 수강생 도달 시 마감 표기 필요
-  const isClosed = course.currentStudents >= course.maxStudents;
-
   // createdAt이 현재로부터 기준 일 (RECENT_DAYS_THRESHOLD) 이내면 "신규" 태그 추가
   const createdAt = new Date(course.createdAt);
   const now = new Date();
@@ -43,7 +40,7 @@ export function CourseCard({
   return (
     <article className="relative w-full h-48 p-2 flex gap-2 flex-col shadow-sm rounded-sm">
       <figure className="w-full h-[60%] bg-skeleton rounded-sm relative">
-        {!readonly && !isClosed && (
+        {!readonly && !course.isFull && (
           <input
             type="checkbox"
             name="courseId"
@@ -84,7 +81,7 @@ export function CourseCard({
           </span>
         </footer>
       </div>
-      {isClosed && (
+      {course.isFull && (
         <div className="bg-black/20 w-full h-full flex items-center justify-center rounded-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl text-secondary">
           <span aria-label="마감">마감</span>
         </div>
