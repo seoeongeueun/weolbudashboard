@@ -1,6 +1,6 @@
 "use server";
 
-import type { SortOption, CourseApiResponse } from "@/types";
+import type { SortOption, CourseApiResponse, CourseResponse } from "@/types";
 import { BASE_URL } from "@/lib/config";
 /**
  * 서버사이드 강의 목록 조회 함수
@@ -26,4 +26,26 @@ export async function fetchCoursesServer(
   }
 
   return response.json();
+}
+
+/**
+ * 서버사이드 강의 id로 강의 정보 조회 함수
+ *
+ * @description
+ * - 단일 강의 정보를 서버에서 직접 백엔드로부터 가져오는 함수
+ * @param courseId
+ * @returns CourseResponse
+ */
+export async function fetchCourseByIdServer(
+  courseId: number,
+): Promise<CourseResponse> {
+  const res = await fetch(`${BASE_URL}/api/courses/${courseId}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch course");
+  }
+
+  return res.json();
 }
