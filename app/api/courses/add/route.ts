@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BASE_URL } from "@/lib/config";
+import { BASE_URL, COOKIE_SETTINGS } from "@/lib/config";
 import { apiRequest } from "@/lib/api/client";
 import type { ApiError } from "@/lib/api/client";
 import type { CourseResponse } from "@/types";
@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 /**
  * 강의 추가 API
  * 강사 권한인지 쿠키에서 확인 후 강사 이름을 추가하여 전달
+ * 신규 추가된 강의 id를 쿠키에 저장 (최대 6개)
  *
  * POST /api/courses
  * body: CourseResponse 타입
@@ -47,6 +48,23 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${cookieStore.get("accessToken")?.value || ""}`,
       },
     });
+
+    //신규 추가된 강의의 id를 쿠키에 저장해서 최근 등록 강의 섹션에서 사용 (최대 6개)
+    const cookiesStore = await cookies();
+    const existingCourseIds = cookiesStore.get("recentlyAddedCourseIds")?.value;
+    let courseIds: number[] = [];
+    if (existingCourseIds) {
+      courseIds = JSON.parse(decodeURIComponent(existingCourseIds));
+    }
+    courseIds.push(res.id);
+    if (courseIds.length > 6) {
+      courseIds = courseIds.slice(-6);
+    }
+    cookiesStore.set(
+      "recentlyAddedCourseIds",
+      encodeURIComponent(JSON.stringify(courseIds)),
+      COOKIE_SETTINGS,
+    );
 
     return NextResponse.json(res, { status: 200 });
   } catch (error) {
