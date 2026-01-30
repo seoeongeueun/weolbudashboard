@@ -52,6 +52,16 @@ export async function enrollCourses(
 
     if (!response.ok) {
       const error = await response.json();
+
+      // U002 에러: 사용자 인증 실패시 쿠키 삭제 후 로그인으로
+      // 서버가 재시작된 경우 쿠키가 남아있는데 사용자가 db에 없는 경우가 발생해서 처리
+      if (error.code === "U002") {
+        cookieStore.delete("accessToken");
+        cookieStore.delete("user");
+        cookieStore.delete("recentlyAddedCourseIds");
+        cookieStore.delete("enrolledCourseIds");
+      }
+
       return {
         success: false,
         message: error.message || "수강 신청에 실패했습니다.",

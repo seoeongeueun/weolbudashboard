@@ -105,7 +105,7 @@ export function CourseList({ sortBy }: CourseListProps) {
           type={state?.success ? "enrollment-success" : "enrollment-failure"}
           onClose={() => setDismissedMessage(message)}
           description={
-            state?.success ? parseEnrollmentStatus(state) : undefined
+            state?.success ? parseEnrollmentStatus(state) : state?.message
           }
         />
       )}
@@ -117,10 +117,7 @@ export function CourseList({ sortBy }: CourseListProps) {
       >
         <section className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full">
           {uniqueCourses.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-            />
+            <CourseCard key={course.id} course={course} />
           ))}
 
           <InfiniteScrollObserver

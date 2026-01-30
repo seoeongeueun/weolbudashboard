@@ -74,7 +74,7 @@ export function parseEnrollmentStatus(status: EnrollmentRequestStatus): string {
   }
 
   if (status.data.failed.length === 0) {
-    return "선택된 모든 강의를 수강 신청했습니다.";
+    return `${status.data.success.length}/${status.data.success.length}개 성공\n[선택된 강의를 수강 신청했습니다]`;
   }
 
   // 실패한 이유들을 중복 없이 수집
