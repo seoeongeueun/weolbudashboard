@@ -19,10 +19,6 @@ type ModalState = "success" | "error" | null; // 모달 상태로 모달에 노�
  * - 수강 인원: 필수, 숫자
  * - 가격: 필수, 숫자
  *
- * @todo
- * - POST /api/courses 엔드포인트 연동
- * - 성공 시 강의 목록 페이지로 리다이렉트
- * - 실패 시 에러 메시지 표시
  */
 export function AddCourseForm() {
   const {
