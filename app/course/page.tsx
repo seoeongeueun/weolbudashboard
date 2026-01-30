@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { SortDropdown } from "@/components/course";
 import type { SortOption } from "@/types";
-import { CourseList, CourseSelectCounter } from "@/components/course";
+import { CourseList } from "@/components/course";
 import { getQueryClient } from "@/lib/query/queryClient";
 import { courseKeys } from "@/lib/query/courseQueries";
 import { fetchCoursesServer } from "@/lib/actions";
@@ -40,10 +40,8 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex flex-row justify-between items-center">
-        <CourseSelectCounter />
-        <div className="ml-auto">
-          <SortDropdown currentSort={sortBy} />
-        </div>
+        <h1 className="text-lg font-bold">전체 강의</h1>
+        <SortDropdown currentSort={sortBy} />
       </div>
       <CourseList sortBy={sortBy} />
     </HydrationBoundary>

@@ -34,6 +34,9 @@ export function CourseList({ sortBy }: CourseListProps) {
     useInfiniteQuery(courseQueries.infinite(sortBy));
 
   const [visibleCourses, setVisibleCourses] = useState<CourseResponse[]>([]);
+  const [selectedCourseIds, setSelectedCourseIds] = useState<Set<number>>(
+    new Set(),
+  );
   const [state, setState] = useState<EnrollmentRequestStatus | null>(null);
   const [pending, setPending] = useState(false);
   const [dismissedMessage, setDismissedMessage] = useState<string | null>(null);
@@ -49,6 +52,13 @@ export function CourseList({ sortBy }: CourseListProps) {
     () => state?.data?.success?.map((item) => Number(item.courseId)) ?? [],
     [state],
   );
+
+  // sort 변경 시 초기화 & 스크롤 최상단
+  useEffect(() => {
+    setVisibleCourses([]);
+    setSelectedCourseIds(new Set());
+    listRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [sortBy]);
 
   useEffect(() => {
     if (!data?.pages) return;
@@ -86,6 +96,19 @@ export function CourseList({ sortBy }: CourseListProps) {
     );
   }, [enrolledIds]);
 
+  // 체크박스 변경 핸들러
+  const handleCheckboxChange = (courseId: number, isChecked: boolean) => {
+    setSelectedCourseIds((prev) => {
+      const next = new Set(prev);
+      if (isChecked) {
+        next.add(courseId);
+      } else {
+        next.delete(courseId);
+      }
+      return next;
+    });
+  };
+
   // 서버 액션은 페이지를 리렌더하고, 그러면 서버에서 받는 데이터의 순서가 달라질 수 있기 때문에 클라이언트 제출로 변경함
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,18 +117,18 @@ export function CourseList({ sortBy }: CourseListProps) {
     setPending(true);
     setDismissedMessage(null);
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData();
+    selectedCourseIds.forEach((id) => formData.append("courseId", String(id)));
     const result = await enrollCourses(formData);
 
     setState(result);
     setPending(false);
-  };
 
-  // sort 변경 시 초기화 & 스크롤 최상단
-  useEffect(() => {
-    setVisibleCourses([]);
-    listRef.current?.scrollTo({ top: 0, behavior: "auto" });
-  }, [sortBy]);
+    // 신청 성공 시 체크박스 초기화
+    if (result.success) {
+      setSelectedCourseIds(new Set());
+    }
+  };
 
   return (
     <>
@@ -118,7 +141,6 @@ export function CourseList({ sortBy }: CourseListProps) {
           }
         />
       )}
-
       <form
         onSubmit={handleSubmit}
         className="flex flex-col h-full overflow-hidden relative"
@@ -128,7 +150,14 @@ export function CourseList({ sortBy }: CourseListProps) {
           className="grid grid-cols-2 gap-4 py-2 overflow-y-auto h-full"
         >
           {visibleCourses.map((course) => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard
+              key={course.id}
+              course={course}
+              isChecked={selectedCourseIds.has(course.id)}
+              onCheckboxChange={(isChecked) =>
+                handleCheckboxChange(course.id, isChecked)
+              }
+            />
           ))}
 
           <InfiniteScrollObserver
@@ -144,7 +173,11 @@ export function CourseList({ sortBy }: CourseListProps) {
           <Button
             type="submit"
             disabled={pending}
-            label="수강 신청하기"
+            label={
+              pending
+                ? "수강 신청 중..."
+                : `${selectedCourseIds.size}개 수강 신청하기`
+            }
             variant="primary"
             size="large"
           />

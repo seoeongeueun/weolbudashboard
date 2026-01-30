@@ -24,7 +24,6 @@ export async function fetchCoursesServer(
     `${BASE_URL}/api/courses?page=${page}&size=${size}&sort=${sort}`,
     { cache: "no-store" },
   );
-  console.log("fetchCoursesServer:", { sort, size, page });
   if (!response.ok) {
     throw new Error("Failed to fetch courses");
   }

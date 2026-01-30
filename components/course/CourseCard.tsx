@@ -20,6 +20,7 @@ export function CourseCard({
   course,
   isChecked = false,
   readonly = false,
+  onCheckboxChange,
 }: CourseCardProps) {
   const tags = [];
 
@@ -45,6 +46,8 @@ export function CourseCard({
             type="checkbox"
             name="courseId"
             value={course.id}
+            checked={isChecked}
+            onChange={(e) => onCheckboxChange?.(e.target.checked)}
             className="absolute z-20 -left-2 -top-2 w-6 h-6 opacity-90 rounded-sm accent-theme outline:ring-2 outline-theme cursor-pointer"
             aria-label={`${course.title} 강의 선택`}
           />
