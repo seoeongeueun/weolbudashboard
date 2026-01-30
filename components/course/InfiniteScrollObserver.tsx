@@ -9,6 +9,7 @@ interface InfiniteScrollObserverProps {
   enabled?: boolean;
   rootRef?: React.RefObject<HTMLElement | null>;
   onLoadMore: () => Promise<unknown> | void;
+  throttleMs?: number;
 }
 
 /**
@@ -23,11 +24,12 @@ export function InfiniteScrollObserver({
   isLoading,
   enabled = true,
   rootRef,
+  throttleMs = 500,
   onLoadMore,
 }: InfiniteScrollObserverProps) {
   const observerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false); //요청 진행중인지 확인
-  const isReadyRef = useRef(true); //다음 요청 준비 완료 확인
+  const lastFireRef = useRef(0); //마지막 요청 시점
 
   useEffect(() => {
     if (!enabled) return;
@@ -35,28 +37,25 @@ export function InfiniteScrollObserver({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) {
-          isReadyRef.current = true;
-          return;
-        }
-
-        // intersecting 중엔 한 번만
-        if (!isReadyRef.current) return;
+        if (!entry.isIntersecting) return;
+        if (loadingRef.current || isLoading) return;
 
         // 로딩 중이면 스킵
         if (loadingRef.current || isLoading) return;
 
-        // 다음 요청 준비 완료 플래그 내리고 진행 중 로딩 플래그 올리기
-        isReadyRef.current = false;
-        loadingRef.current = true;
+        //throttle로 과도한 호출 방지
+        const now = Date.now();
+        if (now - lastFireRef.current < throttleMs) return;
+        lastFireRef.current = now;
 
+        loadingRef.current = true;
         Promise.resolve(onLoadMore()).finally(() => {
           loadingRef.current = false;
         });
       },
       {
         root: rootRef?.current ?? null, //scroll container 기준
-        rootMargin: "100px 0px",
+        rootMargin: "200px 0px",
         threshold: 0,
       },
     );
@@ -68,12 +67,12 @@ export function InfiniteScrollObserver({
       if (el) observer.unobserve(el);
       observer.disconnect();
     };
-  }, [enabled, hasMore, isLoading, onLoadMore, rootRef]);
+  }, [enabled, hasMore, isLoading, onLoadMore, rootRef, throttleMs]);
 
   return (
     <div
       ref={observerRef}
-      className="col-span-2 h-12 flex items-center justify-center"
+      className="shrink-0 col-span-2 h-12 flex items-center justify-center"
       aria-live="polite"
       aria-busy={isLoading}
     >
