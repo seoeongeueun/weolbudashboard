@@ -26,7 +26,8 @@ export function InfiniteScrollObserver({
   onLoadMore,
 }: InfiniteScrollObserverProps) {
   const observerRef = useRef<HTMLDivElement>(null);
-  const loadingRef = useRef(false);
+  const loadingRef = useRef(false); //요청 진행중인지 확인
+  const isReadyRef = useRef(true); //다음 요청 준비 완료 확인
 
   useEffect(() => {
     if (!enabled) return;
@@ -34,17 +35,29 @@ export function InfiniteScrollObserver({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return;
-        if (loadingRef.current) return;
-        if (isLoading) return;
+        if (!entry.isIntersecting) {
+          isReadyRef.current = true;
+          return;
+        }
 
+        // intersecting 중엔 한 번만
+        if (!isReadyRef.current) return;
+
+        // 로딩 중이면 스킵
+        if (loadingRef.current || isLoading) return;
+
+        // 다음 요청 준비 완료 플래그 내리고 진행 중 로딩 플래그 올리기
+        isReadyRef.current = false;
         loadingRef.current = true;
-        onLoadMore();
+
+        Promise.resolve(onLoadMore()).finally(() => {
+          loadingRef.current = false;
+        });
       },
       {
         root: rootRef?.current ?? null, //scroll container 기준
-        rootMargin: "10px",
-        threshold: 1.0, // 완전히 보일 때만
+        rootMargin: "100px 0px",
+        threshold: 0,
       },
     );
 
@@ -57,17 +70,10 @@ export function InfiniteScrollObserver({
     };
   }, [enabled, hasMore, isLoading, onLoadMore, rootRef]);
 
-  // 로딩 끝나면 다시 감지 가능
-  useEffect(() => {
-    if (!isLoading) {
-      loadingRef.current = false;
-    }
-  }, [isLoading]);
-
   return (
     <div
       ref={observerRef}
-      className="col-span-2 h-fit flex items-center justify-center"
+      className="col-span-2 h-12 flex items-center justify-center"
       aria-live="polite"
       aria-busy={isLoading}
     >
