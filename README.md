@@ -33,6 +33,7 @@ pnpm dev
 백엔드는 로컬에서 Docker 이미지로 실행 중이라고 가정합니다.
 모든 API는 http://localhost:8080을 참조합니다.
 
+
 ### 주요 플로우
 
 - 홈 화면 진입
@@ -41,6 +42,7 @@ pnpm dev
 - 회원 정보 확인
 - 강의 목록 진입
 - 강의 선택 및 수강 신청
+
 
 ### 핵심 포인트
 
@@ -136,6 +138,7 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
 
 이 구조를 통해 초기 로딩 성능과 UX를 동시에 확보할 수 있었습니다.
 
+
 ### 홈 화면
 
 ![main](./public/images/main.png)
@@ -157,6 +160,7 @@ export default async function Home() {
 
 서버에서 데이터를 fetch한 뒤,
 최신 강의와 인기 강의를 간단하게 노출합니다.
+
 
 ### 강의 카드
 
@@ -220,6 +224,7 @@ export function CourseCard({
 서버에서 내려온 데이터를 기반으로
 신규 / 인기 / 마감 임박 태그를 자동으로 계산해 부여합니다.
 마감된 강의는 별도 안내와 함께 선택이 불가능하도록 처리했습니다.
+
 
 ### 강의 목록
 
@@ -321,6 +326,7 @@ export function SortDropdown({ currentSort }: { currentSort: SortOption }) {
 }
 ```
 
+
 ### 수강 신청
 
 강의 목록 페이지는 목록 겸 수강 신청 기능으로 사용됩니다.
@@ -351,6 +357,9 @@ try {
 
 배치 수강 신청 API는 성공과 실패가 혼합된 결과를 반환하므로,
 응답 데이터를 기반으로 모달에 상세 결과를 노출합니다.
+
+![course_add_success](./public/images/course_add_success.png)
+
 
 ```
 /**
@@ -386,7 +395,95 @@ export function parseEnrollmentStatus(status: EnrollmentRequestStatus): string {
 
 신청 실패한 강의는 실패 사유를 set을 이용해서 중복 없이 저장하고 공용 ui 컴포넌트인 modal에 노출해서 유저에게 안내합니다.
 
-![course_add_success](./public/images/course_add_success.png)
+
+
+
+### 강의 등록
+
+![course_add](./public/images/course_add.png)
+
+서버 컴포넌트인 강의 추가 페이지에서 쿠키를 확인해서 유저의 권한이 강사인지 확인합니다.
+강사가 아닌 경우 홈 화면으로 리다이렉트 합니다.
+
+```
+export default async function AddCoursePage() {
+  //강사 권한이 없는 유저는 홈으로 리다이렉트
+  const user = await fetchUserProfileFromServer();
+  if (!user || user.role !== "INSTRUCTOR") {
+    redirect("/");
+  }
+
+  return <AddCourseForm />;
+}
+```
+또한 폼 제출시 유저가 강사 권한인지 한번 더 확인하고 쿠키에서 받은 유저 이름을 강사명으로 첨부해서 등록 요청을 보냅니다.
+
+```
+/**
+ * 강의 추가 API
+ * 강사 권한인지 쿠키에서 확인 후 강사 이름을 추가하여 전달
+ * 신규 추가된 강의 id를 쿠키에 저장 (최대 6개)
+ *
+ * POST /api/courses
+ * body: CourseResponse 타입
+ * @returns
+ */
+export async function POST(request: NextRequest) {
+  try {
+    //유저가 role이 instrusctor인지 쿠키에서 확인
+    const cookieStore = await cookies();
+    const userCookie = cookieStore.get("user")?.value;
+
+    if (!userCookie) {
+      return NextResponse.json(
+        { error: "Unauthorized", message: "로그인이 필요합니다." },
+        { status: 401 },
+      );
+    }
+
+    const user = JSON.parse(decodeURIComponent(userCookie));
+    if (user.role !== "INSTRUCTOR") {
+      return NextResponse.json(
+        { error: "Forbidden", message: "강사만 접근할 수 있습니다." },
+        { status: 403 },
+      );
+    }
+
+    const body = await request.json();
+
+    //확인된 강사 유저 이름을 instructorName으로 추가
+    body.instructorName = user.name;
+
+    //토큰 정보를 헤더에 추가하여 전달
+    const res = await apiRequest<CourseResponse>(`${BASE_URL}/api/courses`, {
+      method: "POST",
+      data: body,
+      headers: {
+        Authorization: `Bearer ${cookieStore.get("accessToken")?.value || ""}`,
+      },
+    });
+```
+
+```
+const onSubmit = async (data: CourseFormData) => {
+    try {
+      await addCourse(data);
+
+      // 강의 목록 쿼리 완전히 제거해서 새로 등록된 강의가 보이게
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] === courseKeys.all[0],
+      });
+
+      setModal("success");
+    } catch (error) {
+      console.error("Failed to add course:", error);
+      setModal("error");
+    }
+  };
+```
+
+폼 제출 후에는 캐싱된 데이터를 제거해서 목록으로 리다이렉트 될 때 강사가 신규 등록한 강의가 노출되게 했습니다.
+
 
 ### 인증과 리다이렉트
 
@@ -467,6 +564,7 @@ const accessToken = request.cookies.get("accessToken")?.value;
 ```
 
 쿠키를 베이스로 유저의 로그인 상태를 확인합니다. 미로그인시 로그인 화면으로 리다이렉트 하고 params에 이유를 함께 포함해서 리다이렉션 이후에 모달로 안내 메세지를 노출합니다.
+
 
 ### 쿠키 활용
 
@@ -552,6 +650,7 @@ export default async function AuthPage() {
 
 마찬가지로 유저가 수강신청을 한 후에도 쿠키에 최근에 수강 신청한 강의 id를 저장해서 회원 정보 페이지에 노출합니다.
 
+
 ### 폼 관리
 
 ![login_check](./public/images/login_check.png)
@@ -596,6 +695,7 @@ export default async function AuthPage() {
 ```
 
 서버에서 기대하는 형식에 맞게 전화번호에 하이픈을 자동으로 추가하거나, 입력 형태를 검증하는 방식으로 안정성을 더했습니다.
+
 
 ### 공용 ui 컴포넌트
 
