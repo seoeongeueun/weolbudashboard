@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { BASE_URL } from "@/lib/config";
+import { BASE_URL, COOKIE_SETTINGS } from "@/lib/config";
 import { redirect } from "next/navigation";
 import type { EnrollmentResponse, EnrollmentRequestStatus } from "@/types";
 
@@ -60,6 +60,25 @@ export async function enrollCourses(
     }
 
     const result: EnrollmentResponse = await response.json();
+
+    //성공한 강의 id는 쿠키에 저장 (기존에 성공한 강의도 유지) 최대 6개
+    const existingEnrolledIds = cookieStore.get("enrolledCourseIds")?.value;
+    const enrolledIds = new Set<number>();
+
+    if (existingEnrolledIds) {
+      JSON.parse(decodeURIComponent(existingEnrolledIds)).forEach(
+        (id: number) => enrolledIds.add(id),
+      );
+    }
+
+    result.success.forEach((course) => enrolledIds.add(course.courseId));
+
+    const limitedIds = Array.from(enrolledIds).slice(-6);
+    cookieStore.set(
+      "enrolledCourseIds",
+      encodeURIComponent(JSON.stringify(limitedIds)),
+      COOKIE_SETTINGS,
+    );
 
     // 성공과 실패 결과가 섞여있음 (부분 성공도 요청 성공으로)
     return {

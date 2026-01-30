@@ -31,5 +31,6 @@ export async function logout() {
   cookieStore.delete("accessToken");
   cookieStore.delete("user");
   cookieStore.delete("recentlyAddedCourseIds");
+  cookieStore.delete("enrolledCourseIds");
   redirect("/");
 }
