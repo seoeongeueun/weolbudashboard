@@ -1,17 +1,15 @@
-import type { SortOption, CourseApiResponse } from "@/types";
+import type { SortOption, CourseApiResponse, CourseResponse } from "@/types";
 import { CourseCard } from "@/components/course";
 
 interface MinimizedCourseProps {
   sortBy?: SortOption;
-  data: CourseApiResponse;
+  courses: CourseResponse[];
 }
 
 export function MinimizedCourse({
   sortBy = "recent",
-  data,
+  courses,
 }: MinimizedCourseProps) {
-  const courses = data?.content ?? [];
-
   const getTitleText = () => {
     switch (sortBy) {
       case "popular":
@@ -31,7 +29,7 @@ export function MinimizedCourse({
       <div className="w-full h-52 overflow-x-auto">
         <div className="relative grid grid-flow-col auto-cols-[minmax(300px,1fr)] gap-4">
           {courses.length === 0 && (
-            <p className="absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2 h-fulltext-sm text-skeleton">
+            <p className="absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2 h-full text-sm text-skeleton">
               표시할 강의가 없습니다.
             </p>
           )}

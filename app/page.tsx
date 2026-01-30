@@ -23,8 +23,8 @@ export default async function Home() {
       <Profile user={userProfile} />
       <div className="h-full overflow-y-auto flex flex-col justify-between">
         <section className="space-y-8">
-          <MinimizedCourse sortBy="recent" data={recentData} />
-          <MinimizedCourse sortBy="popular" data={popularData} />
+          <MinimizedCourse sortBy="recent" courses={recentData.content} />
+          <MinimizedCourse sortBy="popular" courses={popularData.content} />
         </section>
         <section className="text-center flex flex-col gap-4 text-black/70">
           <h3 className="text-sm py-2">그 외 더 많은 강의를 둘러보세요</h3>
