@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { CourseResponse } from "@/types";
 import { LoaderCircle } from "lucide-react";
 
 interface InfiniteScrollObserverProps {
   hasMore: boolean;
   isLoading: boolean;
+  enabled?: boolean;
+  rootRef?: React.RefObject<HTMLElement | null>;
   onLoadMore: () => Promise<unknown> | void;
 }
 
@@ -20,38 +21,48 @@ interface InfiniteScrollObserverProps {
 export function InfiniteScrollObserver({
   hasMore,
   isLoading,
+  enabled = true,
+  rootRef,
   onLoadMore,
 }: InfiniteScrollObserverProps) {
   const observerRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
+    if (!enabled) return;
+    if (!hasMore) return;
+
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          onLoadMore();
-          if (observerRef.current) {
-            observer.unobserve(observerRef.current);
-          }
-        }
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        if (loadingRef.current) return;
+        if (isLoading) return;
+
+        loadingRef.current = true;
+        onLoadMore();
       },
       {
-        root: null,
-        rootMargin: "50px", // 50px 미리 감지
-        threshold: 0.1,
+        root: rootRef?.current ?? null, //scroll container 기준
+        rootMargin: "10px",
+        threshold: 1.0, // 완전히 보일 때만
       },
     );
 
-    const currentRef = observerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    const el = observerRef.current;
+    if (el) observer.observe(el);
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (el) observer.unobserve(el);
+      observer.disconnect();
     };
-  }, [hasMore, isLoading, onLoadMore]);
+  }, [enabled, hasMore, isLoading, onLoadMore, rootRef]);
+
+  // 로딩 끝나면 다시 감지 가능
+  useEffect(() => {
+    if (!isLoading) {
+      loadingRef.current = false;
+    }
+  }, [isLoading]);
 
   return (
     <div
