@@ -17,7 +17,6 @@ import type { EnrollmentResponse, EnrollmentRequestStatus } from "@/types";
  * - 실패: { success: false, message: string, data: null }
  */
 export async function enrollCourses(
-  prevState: EnrollmentRequestStatus | null,
   formData: FormData,
 ): Promise<EnrollmentRequestStatus> {
   // 인증된 유저인지 쿠키로 확인

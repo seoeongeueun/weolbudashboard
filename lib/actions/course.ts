@@ -2,6 +2,7 @@
 
 import type { SortOption, CourseApiResponse, CourseResponse } from "@/types";
 import { BASE_URL } from "@/lib/config";
+
 /**
  * 서버사이드 강의 목록 조회 함수
  *
@@ -11,16 +12,19 @@ import { BASE_URL } from "@/lib/config";
  *
  * @param sort 정렬 기준 (recent | popular | rate)
  * @param size 페이지 크기
+ * @param page 페이지 번호 (0-indexed)
  * @returns CourseApiResponse
  */
 export async function fetchCoursesServer(
   sort: SortOption,
   size = 10,
+  page = 0,
 ): Promise<CourseApiResponse> {
   const response = await fetch(
-    `${BASE_URL}/api/courses?page=0&size=${size}&sort=${sort}`,
+    `${BASE_URL}/api/courses?page=${page}&size=${size}&sort=${sort}`,
+    { cache: "no-store" },
   );
-
+  console.log("fetchCoursesServer:", { sort, size, page });
   if (!response.ok) {
     throw new Error("Failed to fetch courses");
   }
